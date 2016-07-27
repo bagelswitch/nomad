@@ -2040,9 +2040,11 @@ func validateServices(t *Task) error {
 	for servicePort, services := range servicePorts {
 		_, ok := portLabels[servicePort]
 		if !ok {
-			joined := strings.Join(services, ", ")
-			err := fmt.Errorf("port label %q referenced by services %v does not exist", servicePort, joined)
-			mErr.Errors = append(mErr.Errors, err)
+                       if _, err := strconv.Atoi(servicePort); err != nil {
+			    joined := strings.Join(services, ", ")
+			    err := fmt.Errorf("port label %q referenced by services %v does not exist", servicePort, joined)
+			    mErr.Errors = append(mErr.Errors, err)
+                       }
 		}
 	}
 	return mErr.ErrorOrNil()
